@@ -4,7 +4,7 @@
     {
         public string GenerateSsoLink()
         {
-            
+            return string.Empty;
         }
     }
 }
