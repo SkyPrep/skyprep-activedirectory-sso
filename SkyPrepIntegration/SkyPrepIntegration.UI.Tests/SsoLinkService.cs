@@ -10,13 +10,14 @@
         public void GivenAllValidInfomration_WhenSkyPrepApiCalled_ShouldReturnAValidUrlInResponse()
         {
             //arrange
-            var ssoService = new SsoLinkService();
+            var apiSettings = Apisetting.Get();
+            var ssoService = new SsoLinkService(apiSettings);
 
             //act
-            var ssoResponse = ssoService.GenerateSsoLink();
+            var ssoResponse = ssoService.GenerateSsoLink("arash.barkhodaee@gmail.com");
 
             //assert
-            ssoResponse.ShouldBeNullOrEmpty();
+            ssoResponse.ShouldNotBeEmpty("login url is not avilable.");
 
 
         }
