@@ -14,7 +14,7 @@
             var ssoService = new SsoLinkService(apiSettings);
 
             //act
-            var ssoResponse = ssoService.GenerateSsoLink("arash.barkhodaee@gmail.com");
+            var ssoResponse = ssoService.GenerateSsoLink("arash.barkhodaee@gmail.com", "Arash", "Barkhodaee", "");
 
             //assert
             ssoResponse.ShouldNotBeEmpty("login url is not avilable.");

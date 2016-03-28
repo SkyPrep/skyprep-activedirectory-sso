@@ -10,9 +10,12 @@ namespace SkyPrepIntegration.UI.Controllers
         {
             var apiSettings = Apisetting.Get();
             var emailAddress = AdService.GetEmailAddress();
- 
+            var firstName = AdService.GetFirstName();
+            var lastName = AdService.GetLastName();
+            var uGroups = AdService.GetUserGroups();
+            
             var ssoLinkService = new SsoLinkService(apiSettings);
-            var loginLink = ssoLinkService.GenerateSsoLink(emailAddress);
+            var loginLink = ssoLinkService.GenerateSsoLink(emailAddress, firstName, lastName, uGroups);
 
             if (!string.IsNullOrEmpty(loginLink))
             {
