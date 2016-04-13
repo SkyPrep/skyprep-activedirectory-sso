@@ -32,16 +32,16 @@
         } 
         public static string GetFirstName()
         {
-            return UserPrincipal.Current.GivenName;
+            return getCurrentUser().GivenName;
         }
 
         public static string GetLastName()
         {
-            return UserPrincipal.Current.Surname;
+            return getCurrentUser().Surname;
         }
         public static string GetEmailAddress()
         {
-            return UserPrincipal.Current.EmailAddress;
+            return getCurrentUser().EmailAddress;
         }
 
         public static string GetUserGroups()
