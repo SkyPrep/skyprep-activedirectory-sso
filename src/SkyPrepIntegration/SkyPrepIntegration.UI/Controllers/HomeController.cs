@@ -3,18 +3,20 @@
 namespace SkyPrepIntegration.UI.Controllers
 {
     using Services;
-
+    using System.Diagnostics;
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
             var apiSettings = Apisetting.Get();
-            var emailAddress = AdService.GetEmailAddress();
-            var firstName = AdService.GetFirstName();
-            var lastName = AdService.GetLastName();
-            var uGroups = AdService.GetUserGroups();
+            string emailAddress = AdService.GetEmailAddress();
+            string firstName = AdService.GetFirstName();
+            string lastName = AdService.GetLastName();
+            string uGroups = AdService.GetUserGroupsAsString();
             
             var ssoLinkService = new SsoLinkService(apiSettings);
+            Debug.WriteLine("User Groups List:");
+            Debug.WriteLine(uGroups);
             var loginLink = ssoLinkService.GenerateSsoLink(emailAddress, firstName, lastName, uGroups);
 
             if (!string.IsNullOrEmpty(loginLink))

@@ -1,6 +1,8 @@
 ﻿namespace SkyPrepIntegration.UI.Services
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.DirectoryServices.AccountManagement;
     using System.Web;
 
@@ -32,21 +34,59 @@
         } 
         public static string GetFirstName()
         {
-            return getCurrentUser().GivenName;
+            if (getCurrentUser() != null)
+            {
+                return getCurrentUser().GivenName;
+            } 
+            return "";
+            
         }
 
         public static string GetLastName()
         {
-            return getCurrentUser().Surname;
+            if (getCurrentUser() != null)
+            {
+                return getCurrentUser().Surname;
+            }
+            return "";
         }
         public static string GetEmailAddress()
         {
-            return getCurrentUser().EmailAddress;
+            if (getCurrentUser() != null)
+            {
+                return getCurrentUser().EmailAddress;
+            }
+            return "";
         }
 
-        public static string GetUserGroups()
+        public static string GetUserGroupsAsString()
         {
+            if (GetUserGroups() != null)
+            {
+                List<string> userGroupsList = GetUserGroups();
+                return string.Join(";", userGroupsList);
+            }
             return "";
+        }
+
+        public static List<string> GetUserGroups()
+        {
+            var results = new List<string>();
+            if (getCurrentUser() != null)
+            {
+                var user = getCurrentUser();
+                PrincipalSearchResult<Principal> groups = user.GetAuthorizationGroups();
+                foreach(Principal p in groups)
+                {
+                    if (p is GroupPrincipal)
+                    {
+                        var group = (GroupPrincipal) p;
+                        results.Add(group.Name);
+                    }
+                }
+                return results;
+            }
+            return null;
         }
     }
 }
