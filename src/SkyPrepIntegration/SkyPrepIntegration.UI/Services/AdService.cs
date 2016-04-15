@@ -59,15 +59,7 @@
             return "";
         }
 
-        public static string GetUserGroupsAsString()
-        {
-            if (GetUserGroups() != null)
-            {
-                List<string> userGroupsList = GetUserGroups();
-                return string.Join(";", userGroupsList);
-            }
-            return "";
-        }
+
 
         public static List<string> GetUserGroups()
         {
@@ -88,5 +80,30 @@
             }
             return null;
         }
+
+        public static List<string> GetUserGroupsAlternate()
+        {
+            var currentUser = getCurrentUser();
+            var rawGroupNames = new List<string>();
+            var groups = currentUser.GetGroups();
+            var iterGroup = groups.GetEnumerator();
+            using (iterGroup)
+            {
+                while (iterGroup.MoveNext())
+                {
+                    try
+                    {
+                        Principal p = iterGroup.Current;
+                        rawGroupNames.Add(p.Name);
+                    }
+                    catch (NoMatchingPrincipalException pex)
+                    {
+                    }
+                }
+            }
+            return rawGroupNames;
+        }
+
+
     }
 }

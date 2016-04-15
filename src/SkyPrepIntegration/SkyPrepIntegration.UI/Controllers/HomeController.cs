@@ -12,7 +12,7 @@ namespace SkyPrepIntegration.UI.Controllers
             string emailAddress = AdService.GetEmailAddress();
             string firstName = AdService.GetFirstName();
             string lastName = AdService.GetLastName();
-            string uGroups = AdService.GetUserGroupsAsString();
+            string uGroups = SkyPrepHelpers.ListToString(AdService.GetUserGroupsAlternate(), ";");
             
             var ssoLinkService = new SsoLinkService(apiSettings);
             Debug.WriteLine("User Groups List:");
