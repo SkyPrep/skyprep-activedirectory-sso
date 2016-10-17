@@ -20,7 +20,14 @@
             _apiSetting = apiSetting;
         }
 
-        public string GenerateSsoLink(string emailAddress, string fName, string lName, string userGroups)
+        public string CurrentTimestamp()
+        {
+            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            return unixTimestamp.ToString();
+        }
+
+
+    public string GenerateSsoLink(string emailAddress, string fName, string lName, string userGroups)
         {
             var baseUri = "https://api.skyprep.io/admin/api/get_login_key";
             if (string.IsNullOrEmpty(emailAddress))
@@ -32,7 +39,7 @@
                 BaseAddress = new Uri(baseUri)
             };
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var urlParameters= BuildRequestUrl(emailAddress, fName, lName, userGroups);
+            var urlParameters = BuildRequestUrl(emailAddress, fName, lName, userGroups);
 
             var response = client.GetAsync(urlParameters).Result;
 
@@ -45,8 +52,11 @@
             return string.Empty;
         }
 
-        private string BuildRequestUrl(string emailAddress, string fname, string lname, string userGroups)
-        {
+
+
+
+
+    private string BuildRequestUrl(string emailAddress, string fname, string lname, string userGroups)  {
 
             NameValueCollection queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["user_email"] = emailAddress;
@@ -57,14 +67,20 @@
             queryString["first_name"] = fname;
             queryString["last_name"] = lname;
             queryString["autocreate_user_groups"] = _apiSetting.AutoCreateUserGroups;
-            queryString["user_groups"] = userGroups;
+            queryString["_"] = CurrentTimestamp();
+
+            if (_apiSetting.AddToUserGroups == "1" || _apiSetting.AddToUserGroups == "true")
+            {
+                queryString["user_groups"] = userGroups;
+            }          
             Debug.WriteLine(queryString.ToString());
             return "?" + queryString.ToString();
             
         }
     }
 
-    public class Apisetting
+
+public class Apisetting
     {
         public string KeyType { get; set; }
         public string AutoCreate { get; set; }
@@ -72,14 +88,16 @@
         public string ApiKey { get; set; }
         public Uri Uri { get; set; }
         public string Acctkey { get; set; }
+        public string AddToUserGroups { get; set; }
 
-        public Apisetting(string apiKey, Uri uri, string keyType, string autoCreate, string acctkey, string autoCreateUserGroups)
+        public Apisetting(string apiKey, Uri uri, string keyType, string autoCreate, string acctkey, string autoCreateUserGroups, string addToUserGroups)
         {
             KeyType = keyType;
             AutoCreate = autoCreate;
             ApiKey = apiKey;
             Acctkey = acctkey;
             AutoCreateUserGroups = autoCreateUserGroups;
+            AddToUserGroups = addToUserGroups;
         }
       
         public static Apisetting Get()
@@ -88,9 +106,10 @@
             var apiKey = ConfigurationManager.AppSettings["api_key"].ToSafeString();
             var keyType = ConfigurationManager.AppSettings["key_type"].ToSafeString();
             var autoCreate = ConfigurationManager.AppSettings["autocreate"].ToSafeString();
+            var addToUserGroups = ConfigurationManager.AppSettings["add_to_user_groups"].ToSafeString();
             var autoCreateUserGroups = ConfigurationManager.AppSettings["autocreate_user_groups"].ToSafeString();
             var uri = new Uri("https://api.skyprep.io/admin/api/get_login_key");
-            return new Apisetting(apiKey, uri, keyType, autoCreate, acct_key, autoCreateUserGroups);
+            return new Apisetting(apiKey, uri, keyType, autoCreate, acct_key, autoCreateUserGroups, addToUserGroups);
         }
     }
 

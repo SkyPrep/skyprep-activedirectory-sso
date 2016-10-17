@@ -7,36 +7,64 @@
     using System.Web;
 
     public class AdService
-
-
     {
 
-        public static UserPrincipal getCurrentUser()
+        private static UserPrincipal CurrentUser;
+
+        public static UserPrincipal GetCurrentUser()
+        {
+            if (CurrentUser != null)
+            {
+                return CurrentUser;
+            }
+
+            CurrentUser = GetUserFromUserPrincipal();
+            if (CurrentUser != null)
+            {
+                CurrentUser = GetUserFromPrincipalContext();
+            }
+
+            return CurrentUser;
+        }
+
+
+        public static UserPrincipal GetUserFromUserPrincipal()
         {
             try
             {
-                return UserPrincipal.Current;
-                
+                CurrentUser = UserPrincipal.Current;
+                return CurrentUser;
 
-            } catch (Exception e)
+
+            }
+            catch (Exception e)
             {
-                try
-                {
-                    var domain = new PrincipalContext(ContextType.Domain);
-                    var name = HttpContext.Current.User.Identity.Name;
-                    return UserPrincipal.FindByIdentity(domain, name);
-                }   catch (Exception ee)
-                {
-                    
-                }
             }
             return null;
-        } 
+        }
+
+        public static UserPrincipal GetUserFromPrincipalContext()
+        {
+            try
+            {
+                var domain = new PrincipalContext(ContextType.Domain);
+                var name = HttpContext.Current.User.Identity.Name;
+                CurrentUser = UserPrincipal.FindByIdentity(domain, name);
+                return CurrentUser;
+            }
+            catch (Exception e)
+            {
+            }
+            return null;
+
+        }
+
+
         public static string GetFirstName()
         {
-            if (getCurrentUser() != null)
+            if (GetCurrentUser() != null)
             {
-                return getCurrentUser().GivenName;
+                return GetCurrentUser().GivenName;
             } 
             return "";
             
@@ -44,17 +72,26 @@
 
         public static string GetLastName()
         {
-            if (getCurrentUser() != null)
+            if (GetCurrentUser() != null)
             {
-                return getCurrentUser().Surname;
+                return GetCurrentUser().Surname;
             }
             return "";
         }
         public static string GetEmailAddress()
         {
-            if (getCurrentUser() != null)
+            if (GetCurrentUser() != null)
             {
-                return getCurrentUser().EmailAddress;
+                return GetCurrentUser().EmailAddress;
+            }
+            return "";
+        }
+
+        public static string GetUserUsername()
+        {
+            if (GetCurrentUser() != null)
+            {
+                return GetCurrentUser().SamAccountName;
             }
             return "";
         }
@@ -64,9 +101,9 @@
         public static List<string> GetUserGroups()
         {
             var results = new List<string>();
-            if (getCurrentUser() != null)
+            if (GetCurrentUser() != null)
             {
-                var user = getCurrentUser();
+                var user = GetCurrentUser();
                 PrincipalSearchResult<Principal> groups = user.GetAuthorizationGroups();
                 foreach(Principal p in groups)
                 {
@@ -83,7 +120,7 @@
 
         public static List<string> GetUserGroupsAlternate()
         {
-            var currentUser = getCurrentUser();
+            var currentUser = GetCurrentUser();
             var rawGroupNames = new List<string>();
             var groups = currentUser.GetGroups();
             var iterGroup = groups.GetEnumerator();

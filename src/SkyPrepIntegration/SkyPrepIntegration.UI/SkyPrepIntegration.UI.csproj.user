@@ -3,6 +3,9 @@
   <PropertyGroup>
     <UseIISExpress>true</UseIISExpress>
     <NameOfLastUsedPublishProfile>LocalDeployment</NameOfLastUsedPublishProfile>
+    <IISExpressAnonymousAuthentication>disabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>true</IISExpressUseClassicPipelineMode>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>

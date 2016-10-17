@@ -7,3 +7,9 @@
         <span style="color:red;font-size: large;font-weight: bolder;">There was an issue logging you into your training portal. Please contact your system administrator.</span>
     </div>
 </div>
+@{
+    <div class="row">
+        <h3>User: @ViewData["username"] </h3>
+        <h4>Error:  @ViewData["errors"] </h4>
+    </div>
+}
